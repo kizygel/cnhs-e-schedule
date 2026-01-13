@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNHS E-Schedule</title>
+    <style>
+        :root {
+            --primary-green: #1b4332;
+            --medium-green: #2d6a4f;
+            --light-green: #95d5b2;
+            --accent: #d8f3dc;
+            --danger: #e63946;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: linear-gradient(rgba(27, 67, 50, 0.8), rgba(27, 67, 50, 0.8)), 
+                        url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        .banner {
+            background: var(--primary-green);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--light-green);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .container { max-width: 1200px; margin: 20px auto; padding: 10px; }
+
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: var(--medium-green);
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .tab-btn.active { background: var(--light-green); color: var(--primary-green); }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .input-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+        label { font-weight: bold; color: var(--primary-green); margin-bottom: 5px; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th { background: var(--primary-green); color: white; padding: 12px; }
+        td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+
+        .admin-only { display: none; }
+        .btn-action { padding: 8px 15px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; }
+        .btn-delete { background: var(--danger); color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-success { background: #217346; color: white; }
+        
+        .admin-toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="banner">
+    <h1>COMPOSTELA NATIONAL HIGH SCHOOL E-SCHEDULE</h1>
+    <p>Organizing Time and Space, the CNHS Way</p>
+    <p style="font-size: 12px; font-style: italic; line-height: 1.1;">
+    A Supreme Secondary Learner Government Initiative | Developed by Raul M. Balidio
+</p>
+</div>
+
+<div class="container">
+    <div class="nav-tabs">
+        <button class="tab-btn active" id="tab-client" onclick="showSection('client')">Client Booking</button>
+        <button class="tab-btn" id="tab-admin" onclick="showSection('admin')">Admin Management</button>
+    </div>
+
+    <div id="clientSection" class="section">
+        <div class="card">
+            <h2>Book a Schedule</h2>
+            <div class="grid">
+                <div class="input-group">
+                    <label>Activity Title</label>
+                    <input type="text" id="title" placeholder="e.g. SLG Meeting">
+                </div>
+                <div class="input-group">
+                    <label>Office/Person</label>
+                    <input type="text" id="office" placeholder="e.g. Juan Dela Cruz">
+                </div>
+                <div class="input-group">
+                    <label>Venue</label>
+                    <select id="venue">
+                        <option>CNHS Sports and Cultural Center (CNHS Gymnasium)</option>
+                        <option>Bantawan Hall</option>
+                        <option>Bahaghari Hall (SPJ Building)</option>
+                        <option>Liharaya Hall (SPA Building)</option>
+                        <option>Bathala Nook</option>
+                        <option>JHS Comlab 1</option>
+                        <option>JHS Comlab 2</option>
+                        <option>JHS Comlab 3</option>
+                        <option>JHS Comlab 4</option>
+                        <option>SHS Comlab 1</option>
+                        <option>SHS Comlab 2</option>
+                        <option>SHS Comlab 3</option>
+                        <option>Principals Office Conference</option>
+                        <option>JHS Open Ground</option>
+                        <option>SHS Open Ground</option>
+                        <option>JHS Clinic</option>
+                        <option>SHS Clinic</option>
+                        <option>Youth Development Office and Conference Room</option>
+                        <option>Newton's Laboratory (JHS Physical Science Lab)</option>
+                        <option>Darwin's Laboratory (JHS Biology Lab)</option>
+                        <option>Pascal's Laboratory (SHS Physical Science Lab)</option>
+                        <option>Hooke's Laboratory (SHS Biology Lab)</option>
+                        <option>Duyog Media Hub (Media Room)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Date</label>
+                    <input type="date" id="date">
+                </div>
+                <div class="input-group">
+                    <label>Start Time</label>
+                    <input type="time" id="start">
+                </div>
+                <div class="input-group">
+                    <label>End Time</label>
+                    <input type="time" id="end">
+                </div>
+            </div>
+            <button class="tab-btn" onclick="submitBooking()" style="width: 100%; margin-top: 10px;">Confirm Booking</button>
+        </div>
+
+        <div class="card">
+            <h2>Active Schedules</h2>
+            <div style="overflow-x: auto;">
+                <table id="clientTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Venue</th>
+                            <th>Activity</th>
+                            <th>Office / Person</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminSection" class="section" style="display: none;">
+        <div class="card" id="adminLogin">
+            <h2>Admin Authentication</h2>
+            <input type="password" id="adminPassInput" placeholder="Enter Admin Password">
+            <button class="tab-btn" onclick="login()" style="margin-top: 10px;">Login</button>
+        </div>
+
+        <div id="adminControls" class="admin-only">
+            <div class="card">
+                <h2>Admin Dashboard</h2>
+                <div class="admin-toolbar">
+                    <button class="btn-action btn-success" onclick="exportCSV()">📥 Export CSV</button>
+                    <button class="btn-action btn-secondary" onclick="changePassword()">🔑 Change Password</button>
+                    <button class="btn-action btn-secondary" onclick="logout()">Logout</button>
+                    <button class="btn-action btn-delete" onclick="clearAll()">⚠️ Clear All</button>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>Activity/Office</th>
+                                <th>Venue</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let bookings = JSON.parse(localStorage.getItem('cnhsBookings')) || [];
+    let adminPass = localStorage.getItem('adminPass') || "admin123";
+    let isAdmin = false;
+
+    // Helper: Format Date to Month Day, Year
+    function formatDate(dateStr) {
+        if (!dateStr) return "";
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateStr).toLocaleDateString(undefined, options);
+    }
+
+    // Helper: Format Time to 12hr format
+    function formatTime(timeStr) {
+        if (!timeStr) return "";
+        let [hours, minutes] = timeStr.split(':');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        return `${hours}:${minutes} ${ampm}`;
+    }
+
+    function showSection(sec) {
+        document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(sec + 'Section').style.display = 'block';
+        document.getElementById('tab-' + sec).classList.add('active');
+    }
+
+    function login() {
+        if(document.getElementById('adminPassInput').value === adminPass) {
+            isAdmin = true;
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('adminControls').style.display = 'block';
+            document.getElementById('adminPassInput').value = '';
+            renderTables();
+        } else {
+            alert("Incorrect Password");
+        }
+    }
+
+    function logout() {
+        isAdmin = false;
+        document.getElementById('adminLogin').style.display = 'block';
+        document.getElementById('adminControls').style.display = 'none';
+        alert("Logged out successfully.");
+    }
+
+    function changePassword() {
+        const newPass = prompt("Enter new administrator password:");
+        if (newPass && newPass.trim().length > 0) {
+            adminPass = newPass;
+            localStorage.setItem('adminPass', adminPass);
+            alert("Password updated successfully!");
+        }
+    }
+
+    function checkConflict(newB) {
+        return bookings.some(b => {
+            return b.date === newB.date && 
+                   b.venue === newB.venue &&
+                   newB.start < b.end && 
+                   newB.end > b.start;
+        });
+    }
+
+    function submitBooking() {
+        const newB = {
+            id: Date.now(),
+            title: document.getElementById('title').value,
+            office: document.getElementById('office').value,
+            venue: document.getElementById('venue').value,
+            date: document.getElementById('date').value,
+            start: document.getElementById('start').value,
+            end: document.getElementById('end').value,
+            status: 'Approved'
+        };
+
+        if(!newB.title || !newB.office || !newB.date || !newB.start || !newB.end) {
+            return alert("Please fill in all fields.");
+        }
+
+        if(checkConflict(newB)) {
+            alert("❌ SCHEDULE CONFLICT: This venue is already booked for the selected time. Please choose a different time or venue.");
+            return;
+        }
+
+        bookings.push(newB);
+        saveAndRender();
+        alert("Booking confirmed successfully!");
+        
+        // Clear inputs
+        document.getElementById('title').value = '';
+        document.getElementById('office').value = '';
+        document.getElementById('date').value = '';
+        document.getElementById('start').value = '';
+        document.getElementById('end').value = '';
+    }
+
+    function deleteBooking(id) {
+        if(confirm("Permanently delete this schedule?")) {
+            bookings = bookings.filter(x => x.id !== id);
+            saveAndRender();
+        }
+    }
+
+    function clearAll() {
+        if(confirm("DANGER: This will delete ALL schedules. Proceed?")) {
+            bookings = [];
+            saveAndRender();
+        }
+    }
+
+    function saveAndRender() {
+        localStorage.setItem('cnhsBookings', JSON.stringify(bookings));
+        renderTables();
+    }
+
+    function renderTables() {
+        const cBody = document.getElementById('clientTableBody');
+        const aBody = document.getElementById('adminTableBody');
+        cBody.innerHTML = '';
+        aBody.innerHTML = '';
+
+        // Sort by chronological order
+        const sorted = [...bookings].sort((a, b) => new Date(a.date + ' ' + a.start) - new Date(b.date + ' ' + b.start));
+
+        sorted.forEach(b => {
+            // Client Table
+            cBody.innerHTML += `<tr>
+                <td>${formatDate(b.date)}</td>
+                <td>${formatTime(b.start)} - ${formatTime(b.end)}</td>
+                <td>${b.venue}</td>
+                <td><strong>${b.title}</strong></td>
+                <td>${b.office}</td>
+            </tr>`;
+
+            // Admin Table
+            if(isAdmin) {
+                aBody.innerHTML += `<tr>
+                    <td>${formatDate(b.date)}<br>${formatTime(b.start)} - ${formatTime(b.end)}</td>
+                    <td><strong>${b.title}</strong><br>${b.office}</td>
+                    <td>${b.venue}</td>
+                    <td>
+                        <button class="btn-action btn-delete" onclick="deleteBooking(${b.id})">Delete</button>
+                    </td>
+                </tr>`;
+            }
+        });
+    }
+
+    function exportCSV() {
+        if(bookings.length === 0) return alert("No schedules to export.");
+        let csv = "Date,Activity,Office,Venue,Start,End\n";
+        bookings.forEach(b => {
+            csv += `"${formatDate(b.date)}","${b.title}","${b.office}","${b.venue}","${formatTime(b.start)}","${formatTime(b.end)}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'CNHS_Schedules.csv';
+        a.click();
+    }
+
+    renderTables();
+</script>
+
+</body>
+</html>
